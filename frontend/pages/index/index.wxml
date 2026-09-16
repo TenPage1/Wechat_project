@@ -1,0 +1,60 @@
+<!--index.wxml-->
+<navigation-bar title="逆地理编码" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+
+    <!-- 用户输入区 -->
+    <view class="form">
+      <view class="form-row">
+        <text class="k">经度</text>
+        <input class="inp" type="digit" value="{{longitude}}"
+               placeholder="如 121.049" bindinput="onLongitudeInput" />
+      </view>
+      <view class="form-row">
+        <text class="k">纬度</text>
+        <input class="inp" type="digit" value="{{latitude}}"
+               placeholder="如 31.315" bindinput="onLatitudeInput" />
+      </view>
+      <button class="btn" bindtap="saveRecord">保存到云端</button>
+      <button class="btn btn-gray" bindtap="readRecord">读取云端</button>
+    </view>
+
+    <!-- 上次保存的记录 -->
+    <view wx:if="{{savedRecord}}" class="saved">
+      上次保存：{{savedRecord.longitude}}, {{savedRecord.latitude}}
+    </view>
+
+    <view class="raw-title">当前接口数据</view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="hint">加载中…</view>
+
+    <!-- 错误提示 -->
+    <view wx:elif="{{error}}" class="error">{{error}}</view>
+
+    <!-- 地址信息 -->
+    <block wx:else>
+      <view class="card">
+        <view class="row"><text class="k">国家</text><text class="v">{{info.country}}</text></view>
+        <view class="row"><text class="k">省份</text><text class="v">{{info.province}}</text></view>
+        <view class="row"><text class="k">城市</text><text class="v">{{info.city}}</text></view>
+        <view class="row"><text class="k">区县</text><text class="v">{{info.district}}</text></view>
+        <view class="row"><text class="k">完整</text><text class="v">{{info.desc}}</text></view>
+        <view class="row"><text class="k">位置</text><text class="v">{{info.pos}}</text></view>
+      </view>
+
+      <!-- 周边道路 -->
+      <view class="raw-title">周边道路（{{roads.length}} 条）</view>
+      <view class="item" wx:for="{{roads}}" wx:key="index">
+        <view class="item-title">{{item.name}}</view>
+        <view class="item-sub">方向：{{item.direction}}　距离：{{item.distance}} 米</view>
+      </view>
+    </block>
+
+    <!-- 原始 JSON 返回 -->
+    <view class="raw-title">原始返回</view>
+    <view class="raw">{{raw}}</view>
+
+  </view>
+</scroll-view>
+

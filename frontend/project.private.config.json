@@ -1,0 +1,13 @@
+{
+  "libVersion": "3.17.3",
+  "projectname": "%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%91%E7%89%88%E6%9C%AC",
+  "setting": {
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "compileHotReLoad": true
+  }
+}

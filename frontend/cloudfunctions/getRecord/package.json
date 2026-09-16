@@ -1,0 +1,9 @@
+{
+  "name": "getRecord",
+  "version": "1.0.0",
+  "description": "读取用户上次保存的记录",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
