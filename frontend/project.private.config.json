@@ -1,6 +1,6 @@
 {
   "libVersion": "3.17.3",
-  "projectname": "%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%91%E7%89%88%E6%9C%AC",
+  "projectname": "frontend",
   "setting": {
     "urlCheck": false,
     "coverView": true,
@@ -8,6 +8,14 @@
     "preloadBackgroundData": false,
     "autoAudits": false,
     "showShadowRootInWxmlPanel": true,
-    "compileHotReLoad": true
+    "compileHotReLoad": true,
+    "skylineRenderEnable": false,
+    "useApiHook": true,
+    "useStaticServer": false,
+    "useLanDebug": false,
+    "showES6CompileOption": false,
+    "checkInvalidKey": true,
+    "ignoreDevUnusedFiles": true,
+    "bigPackageSizeSupport": false
   }
 }
