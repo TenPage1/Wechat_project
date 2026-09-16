@@ -46,7 +46,8 @@ def get_record():
 
 
 if __name__ == "__main__":
-    # 云托管要求监听 0.0.0.0；本地调试用 5000 端口
+    # 云托管要求监听 0.0.0.0；本地调试可用 PORT=5000
     import os
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 80))
     app.run(host="0.0.0.0", port=port)
+
