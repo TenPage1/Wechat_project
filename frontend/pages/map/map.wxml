@@ -1,0 +1,55 @@
+<!--pages/map/map.wxml-->
+<view class="page">
+  <map
+    id="aedmap"
+    class="map"
+    longitude="{{longitude}}"
+    latitude="{{latitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    show-location="{{true}}"
+    bindmarkertap="onMarkerTap"
+  ></map>
+
+  <!-- 顶部：当前选中的目的地 -->
+  <view class="panel top-panel" wx:if="{{selectedPoint}}">
+    <view class="dest">
+      目的地：{{selectedPoint.type === 'takeoff' ? '起飞点' : '停靠点'}} · {{selectedPoint.name}}
+    </view>
+    <view class="dest-sub" wx:if="{{selectedPoint.distance}}">距离约 {{selectedPoint.distance}} 米</view>
+  </view>
+
+  <!-- 底部操作区 -->
+  <view class="panel bottom-panel">
+    <!-- 呼叫中：显示订单状态 -->
+    <view wx:if="{{currentOrder}}" class="order-status">
+      <view class="row">订单 #{{currentOrder.order_id}}　状态：{{currentOrder.status}}</view>
+      <view class="row" wx:if="{{currentOrder.drone_lng}}">
+        无人机位置：{{currentOrder.drone_lng}}, {{currentOrder.drone_lat}}
+      </view>
+    </view>
+
+    <view class="btn-row">
+      <button class="btn primary" bindtap="callDrone">呼叫无人机</button>
+      <button class="btn scan" bindtap="scanToCall">扫码呼叫</button>
+    </view>
+
+    <!-- 就近点位列表 -->
+    <scroll-view class="point-list" scroll-y>
+      <view
+        class="point-item {{selectedPoint.id === item.id ? 'active' : ''}}"
+        wx:for="{{points}}"
+        wx:key="id"
+        bindtap="selectPoint"
+        data-index="{{index}}"
+      >
+        <view class="pi-type {{item.type}}">{{item.type === 'takeoff' ? '起飞' : '停靠'}}</view>
+        <view class="pi-info">
+          <view class="pi-name">{{item.name}}</view>
+          <view class="pi-sub" wx:if="{{item.distance !== undefined}}">约 {{item.distance}} 米</view>
+        </view>
+        <view class="pi-status">{{item.status === 'available' ? '可用' : '占用'}}</view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

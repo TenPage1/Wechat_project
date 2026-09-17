@@ -1,0 +1,20 @@
+<!--pages/test/test.wxml-->
+<navigation-bar title="通信测试" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+
+    <view class="tip">
+      <view>环境：prod-d4g787qk771f33524</view>
+      <view>服务：flask-0cc2-002</view>
+    </view>
+
+    <button class="btn" bindtap="testHello">测试 /hello</button>
+    <button class="btn" bindtap="testSave">测试 /save</button>
+    <button class="btn" bindtap="testGet">测试 /get</button>
+
+    <view class="raw-title">后端返回</view>
+    <view class="raw">{{result || '（点上面按钮测试）'}}</view>
+
+  </view>
+</scroll-view>
+

@@ -1,0 +1,83 @@
+/**pages/profile/profile.wxss**/
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.scrollarea { flex: 1; overflow-y: hidden; }
+.container { padding: 24rpx; }
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+}
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #eff6ff;
+  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+.user-name { font-size: 32rpx; font-weight: 600; color: #1f2937; }
+.user-id { font-size: 22rpx; color: #9ca3af; margin-top: 8rpx; word-break: break-all; }
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #374151;
+  margin: 16rpx 0 16rpx 8rpx;
+}
+
+.empty {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 26rpx;
+  padding: 40rpx 0;
+}
+
+.record .record-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+.record-id { font-size: 28rpx; font-weight: 600; color: #1f2937; }
+.record-status {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  background: #eef1f5;
+  color: #6b7280;
+}
+.record-status.done { background: #ecfdf5; color: #10b981; }
+.record-status.flying { background: #eff6ff; color: #2563eb; }
+.record-line { font-size: 25rpx; color: #4b5563; line-height: 1.8; }
+.record-line.mute { color: #9ca3af; font-size: 23rpx; }
+
+.feedback-input {
+  width: 100%;
+  min-height: 160rpx;
+  font-size: 27rpx;
+  background: #f8fafc;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  margin-bottom: 20rpx;
+}
+.btn {
+  background: #2563eb;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 12rpx;
+}

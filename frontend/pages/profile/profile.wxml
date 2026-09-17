@@ -1,0 +1,44 @@
+<!--pages/profile/profile.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+
+    <!-- 用户信息 -->
+    <view class="card user-card">
+      <view class="avatar">🚁</view>
+      <view class="user-info">
+        <view class="user-name">AED 无人机用户</view>
+        <view class="user-id">ID: {{openid || '未登录'}}</view>
+      </view>
+    </view>
+
+    <!-- 历史呼叫记录 -->
+    <view class="section-title">历史呼叫记录</view>
+    <view wx:if="{{history.length === 0}}" class="empty">暂无呼叫记录</view>
+    <view class="card record" wx:for="{{history}}" wx:key="id">
+      <view class="record-top">
+        <text class="record-id">订单 #{{item.id}}</text>
+        <text class="record-status {{item.status}}">{{item.status}}</text>
+      </view>
+      <view class="record-line">无人机 ID：{{item.drone_id}}</view>
+      <view class="record-line">目的点位 ID：{{item.to_point_id}}</view>
+      <view class="record-line mute">呼叫时间：{{item.create_time}}</view>
+      <view class="record-line mute" wx:if="{{item.drone_lng}}">
+        无人机位置：{{item.drone_lng}}, {{item.drone_lat}}
+      </view>
+    </view>
+
+    <!-- 优化建议 -->
+    <view class="section-title">优化建议</view>
+    <view class="card">
+      <textarea
+        class="feedback-input"
+        placeholder="欢迎提出你的优化建议…"
+        value="{{feedback}}"
+        bindinput="onFeedbackInput"
+        maxlength="500"
+      ></textarea>
+      <button class="btn" bindtap="submitFeedback">提交建议</button>
+    </view>
+
+  </view>
+</scroll-view>

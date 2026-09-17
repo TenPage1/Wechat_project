@@ -1,12 +1,37 @@
 {
   "pages": [
+    "pages/map/map",
+    "pages/profile/profile",
+    "pages/test/test",
     "pages/index/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationStyle": "custom"
+    "navigationBarTitleText": "AED 无人机调度",
+    "navigationBarBackgroundColor": "#ffffff"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于查找并呼叫附近可用的无人机点位"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation"],
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#2563eb",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/map/map",
+        "text": "地图"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  }
 }

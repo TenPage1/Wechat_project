@@ -1,0 +1,98 @@
+/**pages/map/map.wxss**/
+.page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.panel {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.12);
+  padding: 20rpx 24rpx;
+}
+.top-panel {
+  top: 24rpx;
+}
+.bottom-panel {
+  bottom: 24rpx;
+  padding-bottom: 12rpx;
+}
+
+.dest {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+.dest-sub {
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-top: 6rpx;
+}
+
+.order-status {
+  background: #eff6ff;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
+}
+.order-status .row {
+  font-size: 25rpx;
+  color: #2563eb;
+  line-height: 1.7;
+  word-break: break-all;
+}
+
+.btn-row {
+  display: flex;
+  gap: 16rpx;
+}
+.btn {
+  flex: 1;
+  font-size: 28rpx;
+  border-radius: 12rpx;
+  margin: 0;
+}
+.btn.primary {
+  background: #2563eb;
+  color: #fff;
+}
+.btn.scan {
+  background: #eef1f5;
+  color: #2563eb;
+}
+
+.point-list {
+  max-height: 320rpx;
+  margin-top: 16rpx;
+}
+.point-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 12rpx;
+  border-bottom: 1rpx solid #f1f3f5;
+}
+.point-item.active {
+  background: #f0f7ff;
+  border-radius: 10rpx;
+}
+.pi-type {
+  font-size: 22rpx;
+  color: #fff;
+  border-radius: 8rpx;
+  padding: 4rpx 12rpx;
+  margin-right: 16rpx;
+}
+.pi-type.takeoff { background: #f59e0b; }
+.pi-type.landing { background: #10b981; }
+.pi-info { flex: 1; }
+.pi-name { font-size: 27rpx; color: #1f2937; }
+.pi-sub { font-size: 22rpx; color: #9ca3af; margin-top: 2rpx; }
+.pi-status { font-size: 23rpx; color: #2563eb; }
