@@ -2,7 +2,26 @@
 import os
 import sqlite3
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'aed.db')
+# 数据库路径：优先用环境变量 DB_PATH；否则用可写目录
+# 云托管容器里 /app 可能只读，回退到 /tmp
+def _resolve_db_path():
+    env_path = os.environ.get('DB_PATH')
+    if env_path:
+        return env_path
+    base = os.path.join(os.path.dirname(__file__), 'data')
+    try:
+        os.makedirs(base, exist_ok=True)
+        # 试写，确认有权限
+        test = os.path.join(base, '.w')
+        with open(test, 'w') as f:
+            f.write('x')
+        os.remove(test)
+        return os.path.join(base, 'aed.db')
+    except Exception:
+        return '/tmp/aed.db'
+
+
+DB_PATH = _resolve_db_path()
 
 
 def get_conn():
