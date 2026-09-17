@@ -4,7 +4,6 @@ import os
 from flask import Flask, request, jsonify
 
 import db
-import drone_link
 
 app = Flask(__name__)
 
@@ -115,18 +114,74 @@ def call_drone():
     db.set_drone_status(drone['id'], 'busy')
     db.update_order(order_id, status='taking_off')
 
-    sent = drone_link.send_to_drone(drone['id'], {
-        'cmd': 'goto',
-        'order_id': order_id,
-        'to': {'lng': to_point['longitude'], 'lat': to_point['latitude']}
-    })
-
+    # 注意：不再主动 TCP 推送。
+    # 无人机通过 /api/drone/poll 主动来领指令（HTTP 轮询，云托管友好）
     return ok({
         'order_id': order_id,
         'drone_id': drone['id'],
-        'sent': sent,
         'to_point': to_point
     })
+
+
+# ==================== 无人机 HTTP 轮询接口 ====================
+@app.route('/api/drone/poll', methods=['GET'])
+def drone_poll():
+    """无人机轮询领任务 ?drone_id=1
+    返回：无任务 -> {task: null}；有任务 -> {task: {order_id, to:{lng,lat}}}"""
+    drone_id = request.args.get('drone_id', type=int)
+    if not drone_id:
+        return err('缺少 drone_id')
+
+    # 刷新心跳
+    db.set_drone_status(drone_id, 'busy' if _drone_busy(drone_id) else 'idle')
+
+    task = db.get_pending_dispatch(drone_id)
+    if not task:
+        return ok({'task': None})
+
+    to_point = db.get_point(task['to_point_id'])
+    db.update_order(task['id'], dispatched=1, status='flying')
+    return ok({
+        'task': {
+            'order_id': task['id'],
+            'to': {'lng': to_point['longitude'], 'lat': to_point['latitude']}
+        }
+    })
+
+
+def _drone_busy(drone_id):
+    conn = db.get_conn()
+    r = conn.execute(
+        "SELECT COUNT(*) AS c FROM orders WHERE drone_id=? AND status IN ('taking_off','flying')",
+        (drone_id,)
+    ).fetchone()
+    conn.close()
+    return r['c'] > 0
+
+
+@app.route('/api/drone/report', methods=['POST'])
+def drone_report():
+    """无人机上报位置 {drone_id, order_id, lng, lat, status}
+    status: flying / arrived / done"""
+    body = request.get_json(silent=True) or {}
+    drone_id = body.get('drone_id')
+    oid = body.get('order_id')
+    lng = body.get('lng')
+    lat = body.get('lat')
+    status = body.get('status')
+
+    if drone_id:
+        db.set_drone_position(drone_id, lng, lat)
+    if oid:
+        fields = {'drone_lng': lng, 'drone_lat': lat}
+        if status == 'arrived':
+            fields['status'] = 'arrived'
+        elif status == 'done':
+            fields['status'] = 'done'
+        db.update_order(oid, **fields)
+        if status == 'done' and drone_id:
+            db.set_drone_status(drone_id, 'idle')
+    return ok()
 
 
 @app.route('/api/order/status', methods=['GET'])
@@ -186,7 +241,6 @@ def debug_simulate_move():
 
 # ==================== 启动 ====================
 db.init_db()
-drone_link.start_tcp_server()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 80))

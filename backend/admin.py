@@ -37,6 +37,9 @@ PAGE = '''
   button.danger { background: #ef4444; }
   .actions a { color: #2563eb; text-decoration: none; margin-right: 12px; font-size: 13px; }
   .tag { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: #eef1f5; color: #6b7280; }
+  td input, td select { padding: 6px; font-size: 13px; }
+  td.cell-num { width: 110px; }
+  .save-btn { background: #10b981; padding: 6px 12px; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -44,21 +47,34 @@ PAGE = '''
 <div class="wrap">
 
   <div class="card">
-    <h2>无人机点位管理</h2>
+    <h2>无人机点位管理（可直接修改后点“保存”）</h2>
     <table>
       <tr><th>ID</th><th>类型</th><th>名称</th><th>经度</th><th>纬度</th><th>二维码ID</th><th>状态</th><th>操作</th></tr>
       {% for p in points %}
       <tr>
-        <td>{{p.id}}</td>
-        <td>{{'起飞点' if p.type=='takeoff' else '停靠点'}}</td>
-        <td>{{p.name}}</td>
-        <td>{{p.longitude}}</td>
-        <td>{{p.latitude}}</td>
-        <td>{{p.qr_id or '-'}}</td>
-        <td><span class="tag">{{p.status}}</span></td>
-        <td class="actions">
-          <a href="/admin/point/delete?id={{p.id}}&token={{token}}" onclick="return confirm('确认删除？')">删除</a>
-        </td>
+        <form method="post" action="/admin/point/update?token={{token}}">
+          <td>{{p.id}}<input type="hidden" name="id" value="{{p.id}}"></td>
+          <td>
+            <select name="type">
+              <option value="takeoff" {{'selected' if p.type=='takeoff' else ''}}>起飞点</option>
+              <option value="landing" {{'selected' if p.type=='landing' else ''}}>停靠点</option>
+            </select>
+          </td>
+          <td><input name="name" value="{{p.name}}"></td>
+          <td class="cell-num"><input name="longitude" value="{{p.longitude}}"></td>
+          <td class="cell-num"><input name="latitude" value="{{p.latitude}}"></td>
+          <td><input name="qr_id" value="{{p.qr_id or ''}}"></td>
+          <td>
+            <select name="status">
+              <option value="available" {{'selected' if p.status=='available' else ''}}>可用</option>
+              <option value="occupied" {{'selected' if p.status=='occupied' else ''}}>占用</option>
+            </select>
+          </td>
+          <td class="actions">
+            <button type="submit" class="save-btn">保存</button>
+            <a href="/admin/point/delete?id={{p.id}}&token={{token}}" onclick="return confirm('确认删除？')">删除</a>
+          </td>
+        </form>
       </tr>
       {% endfor %}
     </table>
@@ -161,6 +177,22 @@ def admin_add_point():
         'longitude': float(request.form.get('longitude')),
         'latitude': float(request.form.get('latitude')),
         'qr_id': request.form.get('qr_id') or None,
+    })
+    return redirect('/admin?token=' + request.args.get('token'))
+
+
+@admin_bp.route('/admin/point/update', methods=['POST'])
+def admin_update_point():
+    if not check_token():
+        return '无权限', 403
+    pid = request.form.get('id', type=int)
+    db.update_point(pid, {
+        'type': request.form.get('type'),
+        'name': request.form.get('name'),
+        'longitude': float(request.form.get('longitude')),
+        'latitude': float(request.form.get('latitude')),
+        'qr_id': request.form.get('qr_id') or None,
+        'status': request.form.get('status', 'available'),
     })
     return redirect('/admin?token=' + request.args.get('token'))
 

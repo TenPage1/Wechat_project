@@ -1,8 +1,8 @@
 // utils/api.js —— 统一网络请求封装
 
-// 后端地址：云托管公网域名（PC 调试需在开发者工具勾选"不校验合法域名"）
-const BASE_URL = 'https://flask-0cc2-314918-11-1410604288.sh.run.tcloudbase.com'
-// 本地调试时改回：'http://127.0.0.1:5000'
+// 后端地址：本地调试
+const BASE_URL = 'http://127.0.0.1:5000'
+// 上线后改回云托管域名：'https://flask-0cc2-314918-11-1410604288.sh.run.tcloudbase.com'
 
 function request(path, method = 'GET', data = {}) {
   return new Promise((resolve, reject) => {

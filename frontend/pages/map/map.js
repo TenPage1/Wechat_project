@@ -5,10 +5,10 @@ const app = getApp()
 Page({
   data: {
     openid: '',
-    // 地图
-    longitude: 121.196,
-    latitude: 31.096,
-    scale: 14,
+    // 地图（默认中心：大连理工大学）
+    longitude: 121.52530,
+    latitude: 38.88340,
+    scale: 15,
     markers: [],
     // 点位
     points: [],

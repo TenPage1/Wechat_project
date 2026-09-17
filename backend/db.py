@@ -63,6 +63,7 @@ def init_db():
             status        TEXT DEFAULT 'pending',   -- pending/taking_off/flying/arrived/done/failed
             drone_lng     REAL,
             drone_lat     REAL,
+            dispatched    INTEGER DEFAULT 0,        -- 指令是否已被无人机领走（HTTP轮询用）
             create_time   TEXT DEFAULT (datetime('now','localtime')),
             update_time   TEXT DEFAULT (datetime('now','localtime'))
         )
@@ -80,26 +81,26 @@ def init_db():
 
     conn.commit()
 
-    # 首次插入示例点位（上海佘山一带）
+    # 首次插入点位（大连理工大学创新创业学院一带，GCJ-02）
+    # 起飞点：大连理工大学创新创业学院  ~ 121.5253, 38.8834
     cur.execute('SELECT COUNT(*) AS c FROM points')
     if cur.fetchone()['c'] == 0:
         samples = [
-            ('takeoff', '起飞点A-佘山站', 121.196, 31.096, None),
-            ('takeoff', '起飞点B-大学城', 121.226, 31.036, None),
-            ('landing', '停靠点1-欢乐谷', 121.188, 31.091, 'QR_LAND_001'),
-            ('landing', '停靠点2-月湖公园', 121.204, 31.083, 'QR_LAND_002'),
-            ('landing', '停靠点3-广富林', 121.219, 31.056, 'QR_LAND_003'),
+            ('takeoff', '起飞点-大工创新创业学院', 121.52530, 38.88340, None),
+            ('landing', '停靠点1-主楼广场', 121.52410, 38.88180, 'QR_LAND_001'),
+            ('landing', '停靠点2-图书馆', 121.52760, 38.88220, 'QR_LAND_002'),
+            ('landing', '停靠点3-体育馆', 121.52300, 38.88560, 'QR_LAND_003'),
         ]
         cur.executemany(
             'INSERT INTO points (type,name,longitude,latitude,qr_id) VALUES (?,?,?,?,?)',
             samples
         )
 
-    # 首次插入示例无人机
+    # 首次插入无人机（1 台，默认停在起飞点）
     cur.execute('SELECT COUNT(*) AS c FROM drones')
     if cur.fetchone()['c'] == 0:
         conn.execute(
-            "INSERT INTO drones (name,status,current_lng,current_lat) VALUES ('无人机-01','idle',121.196,31.096)"
+            "INSERT INTO drones (name,status,current_lng,current_lat) VALUES ('无人机-01','idle',121.52530,38.88340)"
         )
 
     conn.commit()
@@ -261,6 +262,19 @@ def update_order(oid, **fields):
     )
     conn.commit()
     conn.close()
+
+
+def get_pending_dispatch(drone_id):
+    """取该无人机名下、尚未下发的任务（HTTP 轮询用）"""
+    conn = get_conn()
+    r = conn.execute(
+        '''SELECT * FROM orders
+           WHERE drone_id=? AND dispatched=0 AND status IN ('pending','taking_off')
+           ORDER BY id LIMIT 1''',
+        (drone_id,)
+    ).fetchone()
+    conn.close()
+    return dict(r) if r else None
 
 
 def list_orders(openid=None):
